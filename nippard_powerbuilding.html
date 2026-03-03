@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIPPARD METHOD — 파워빌딩 4일 프로그램</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --surface3: #282828;
+    --accent: #c8ff00;
+    --accent2: #ff6b00;
+    --accent3: #00cfff;
+    --text: #f0f0f0;
+    --muted: #666;
+    --border: #2c2c2c;
+    --strength: #ff4444;
+    --hypertrophy: #44aaff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* Hero */
+  .hero {
+    background: var(--surface);
+    border-bottom: 3px solid var(--accent);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: 'POWERBUILDING';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(200,255,0,0.04);
+    letter-spacing: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 5px;
+    line-height: 1;
+  }
+
+  .hero-title span { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid;
+  }
+
+  .pill-green { border-color: var(--accent); color: var(--accent); }
+  .pill-orange { border-color: var(--accent2); color: var(--accent2); }
+  .pill-blue { border-color: var(--accent3); color: var(--accent3); }
+
+  /* Nav */
+  .nav-tabs {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    padding: 13px 20px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  /* Pages */
+  .page { display: none; padding: 16px; max-width: 640px; margin: 0 auto; }
+  .page.active { display: block; animation: fadeUp 0.3s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Section title */
+  .sec-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 3px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sec-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* Week selector */
+  .week-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .week-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .week-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,255,0,0.05);
+  }
+
+  .week-btn:hover:not(.active) { border-color: var(--text); color: var(--text); }
+
+  /* Week type badge */
+  .week-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    margin-bottom: 16px;
+    border: 1px solid;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .week-type-badge.strength { border-color: var(--strength); color: var(--strength); background: rgba(255,68,68,0.05); }
+  .week-type-badge.hypertrophy { border-color: var(--hypertrophy); color: var(--hypertrophy); background: rgba(68,170,255,0.05); }
+
+  /* Day tabs */
+  .day-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .day-tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .day-tab.active {
+    border-color: var(--accent);
+    background: rgba(200,255,0,0.05);
+  }
+
+  .day-tab-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    display: block;
+  }
+
+  .day-tab.active .day-tab-label { color: var(--accent); }
+
+  .day-tab-sub {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .day-tab.done .day-tab-label::after {
+    content: ' ✓';
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  /* Exercise table */
+  .workout-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .block-header {
+    background: var(--surface2);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .block-type {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid;
+  }
+
+  .block-type.primary { border-color: var(--strength); color: var(--strength); }
+  .block-type.secondary { border-color: var(--accent2); color: var(--accent2); }
+  .block-type.accessory { border-color: var(--hypertrophy); color: var(--hypertrophy); }
+
+  .block-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+
+  .exercise-row {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .exercise-row:last-child { border-bottom: none; }
+
+  .exercise-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .exercise-detail {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .exercise-prescription {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .prescription-main {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .prescription-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .rpe-badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 1px 5px;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+  }
+
+  .pct-badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 1px 5px;
+    border: 1px solid var(--strength);
+    color: var(--strength);
+  }
+
+  /* Principle cards */
+  .principle-grid {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .principle-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 14px 16px;
+  }
+
+  .principle-card:nth-child(2) { border-left-color: var(--accent2); }
+  .principle-card:nth-child(3) { border-left-color: var(--accent3); }
+  .principle-card:nth-child(4) { border-left-color: var(--strength); }
+  .principle-card:nth-child(5) { border-left-color: #aa44ff; }
+
+  .principle-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .principle-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .principle-body {
+    font-size: 13px;
+    color: #bbb;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .principle-body strong { color: var(--accent); font-weight: 700; }
+
+  /* Progress tracker */
+  .progress-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .progress-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent);
+    padding: 14px;
+  }
+
+  .progress-card:nth-child(2) { border-top-color: var(--accent2); }
+  .progress-card:nth-child(3) { border-top-color: var(--accent3); }
+  .progress-card:nth-child(4) { border-top-color: var(--strength); }
+
+  .progress-lift {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .progress-input-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .progress-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 6px 8px;
+    width: 100%;
+    outline: none;
+    text-align: center;
+  }
+
+  .progress-input:focus { border-color: var(--accent); }
+
+  .progress-unit {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .calc-result {
+    margin-top: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .calc-result span { color: var(--accent); font-weight: 700; }
+
+  /* Done button */
+  .done-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+    border: none;
+    padding: 14px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s;
+  }
+
+  .done-btn:active { transform: scale(0.99); }
+  .done-btn.completed {
+    background: var(--surface2);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  /* RPE guide */
+  .rpe-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+
+  .rpe-table th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rpe-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .rpe-table tr:hover td { background: var(--surface2); }
+
+  .rpe-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent2);
+  }
+
+  /* Warmup */
+  .warmup-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent3);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+
+  .warmup-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--accent3);
+    margin-bottom: 8px;
+  }
+
+  .warmup-step {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #bbb;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .warmup-step:last-child { border-bottom: none; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--accent);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    padding: 10px 24px;
+    z-index: 9999;
+    transition: transform 0.3s ease;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Info box */
+  .info-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.7;
+  }
+
+  .info-box strong { color: var(--accent3); }
+
+  @media (max-width: 380px) {
+    .day-tabs { grid-template-columns: repeat(2, 1fr); }
+    .progress-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-title">NIPPARD <span>METHOD</span></div>
+  <div class="hero-sub">4-Day Powerbuilding · Advanced · 10 Weeks</div>
+  <div class="hero-pills">
+    <span class="pill pill-green">Upper / Lower Split</span>
+    <span class="pill pill-orange">%1RM + RPE 기반</span>
+    <span class="pill pill-blue">홀수주: 근력 / 짝수주: 근비대</span>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showPage('program', this)">프로그램</button>
+  <button class="tab-btn" onclick="showPage('principles', this)">원칙</button>
+  <button class="tab-btn" onclick="showPage('calculator', this)">1RM 계산기</button>
+  <button class="tab-btn" onclick="showPage('guide', this)">RPE 가이드</button>
+</div>
+
+<!-- PROGRAM PAGE -->
+<div id="page-program" class="page active">
+
+  <div class="week-selector" id="weekSelector"></div>
+
+  <div id="weekTypeBadge"></div>
+
+  <div class="day-tabs" id="dayTabs"></div>
+
+  <div id="workoutContent"></div>
+
+</div>
+
+<!-- PRINCIPLES PAGE -->
+<div id="page-principles" class="page">
+  <div class="sec-title">Jeff Nippard 핵심 원칙</div>
+
+  <div class="principle-grid">
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 01</div>
+      <div class="principle-title">홀수주 vs 짝수주 교번</div>
+      <div class="principle-body">
+        <strong>홀수 주(Week 1,3,5...)</strong>는 근력 주로 낮은 반복수(3~5회), 높은 강도(%1RM 80~90%)로 Big 3에 집중합니다.
+        <strong>짝수 주(Week 2,4,6...)</strong>는 근비대 주로 중간 반복수(6~12회), RPE 7~9 기반으로 훈련합니다.
+        이 교번 구조가 근력과 근육을 동시에 극대화합니다.
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 02</div>
+      <div class="principle-title">Top Set + Back-off Set</div>
+      <div class="principle-body">
+        각 주요 리프트에서 <strong>Top Set</strong>(최고 강도 1세트)으로 신경계를 자극한 뒤, 
+        <strong>Back-off Set</strong>(10~15% 낮은 중량)으로 추가 볼륨을 쌓습니다. 근력과 근비대를 모두 잡는 핵심 전략입니다.
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 03</div>
+      <div class="principle-title">복합 반복수 범위</div>
+      <div class="principle-body">
+        <strong>낮은 반복수(1~5회)</strong>: 기계적 장력(Mechanical Tension)을 통한 근성장 신호.
+        <strong>높은 반복수(8~20회)</strong>: 대사적 스트레스(Metabolic Stress)를 통한 근성장 신호.
+        한 가지 반복수만 쓰면 성장 잠재력의 절반을 버리는 것입니다.
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 04</div>
+      <div class="principle-title">점진적 과부하 (Progressive Overload)</div>
+      <div class="principle-body">
+        같은 RPE를 유지하면서 <strong>매 주 또는 격주로 중량을 2.5~5kg씩</strong> 올리는 것이 목표입니다.
+        중량 증가가 막히면 반복수를 늘리거나, 세트를 추가하거나, 휴식을 줄이는 방식으로 과부하를 만드세요.
+      </div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 05</div>
+      <div class="principle-title">피라미드 웜업 프로토콜</div>
+      <div class="principle-body">
+        주요 운동 전 반드시 <strong>피라미드 웜업</strong>을 실시합니다.
+        빈 바(15회) → 40%×5회 → 50%×4회 → 60%×3회 → 70%×2회 → 워킹 세트 시작.
+        부상 예방과 신경계 활성화에 필수적입니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">스플릿 구조</div>
+  <div class="info-box">
+    <strong>Upper/Lower 4일 분할</strong><br>
+    월: Upper A (가슴·등 근력 포커스) → 화: Lower A (스쿼트 포커스) → 목: Upper B (어깨·팔 포커스) → 금: Lower B (데드리프트 포커스)<br><br>
+    수·토·일은 회복일. 근력 주와 근비대 주가 교번하며 전신 근육을 2회/주 훈련합니다.
+  </div>
+</div>
+
+<!-- CALCULATOR PAGE -->
+<div id="page-calculator" class="page">
+  <div class="sec-title">1RM 계산기</div>
+
+  <div class="info-box">
+    <strong>사용법:</strong> 실제로 들어올린 무게와 반복수를 입력하면 예상 1RM과 각 %1RM 중량이 자동 계산됩니다.
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);padding:16px;margin-bottom:14px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px">무게 (kg)</label>
+        <input type="number" id="calcWeight" placeholder="100" oninput="calc1RM()"
+          style="background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:20px;padding:10px;width:100%;outline:none">
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px">반복수 (회)</label>
+        <input type="number" id="calcReps" placeholder="5" oninput="calc1RM()"
+          style="background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:20px;padding:10px;width:100%;outline:none">
+      </div>
+    </div>
+    <div id="calcResult" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--muted)">
+      무게와 반복수를 입력하세요
+    </div>
+  </div>
+
+  <div class="sec-title">내 최대 중량 저장</div>
+  <div class="progress-grid">
+    <div class="progress-card">
+      <div class="progress-lift">스쿼트</div>
+      <div class="progress-input-row">
+        <input type="number" class="progress-input" id="squat1rm" placeholder="0" oninput="save1RM('squat', this.value); updatePercentages()">
+        <span class="progress-unit">kg</span>
+      </div>
+      <div class="calc-result" id="squat-pcts"></div>
+    </div>
+    <div class="progress-card">
+      <div class="progress-lift">벤치프레스</div>
+      <div class="progress-input-row">
+        <input type="number" class="progress-input" id="bench1rm" placeholder="0" oninput="save1RM('bench', this.value); updatePercentages()">
+        <span class="progress-unit">kg</span>
+      </div>
+      <div class="calc-result" id="bench-pcts"></div>
+    </div>
+    <div class="progress-card">
+      <div class="progress-lift">데드리프트</div>
+      <div class="progress-input-row">
+        <input type="number" class="progress-input" id="dead1rm" placeholder="0" oninput="save1RM('dead', this.value); updatePercentages()">
+        <span class="progress-unit">kg</span>
+      </div>
+      <div class="calc-result" id="dead-pcts"></div>
+    </div>
+    <div class="progress-card">
+      <div class="progress-lift">오버헤드프레스</div>
+      <div class="progress-input-row">
+        <input type="number" class="progress-input" id="ohp1rm" placeholder="0" oninput="save1RM('ohp', this.value); updatePercentages()">
+        <span class="progress-unit">kg</span>
+      </div>
+      <div class="calc-result" id="ohp-pcts"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RPE GUIDE PAGE -->
+<div id="page-guide" class="page">
+  <div class="sec-title">RPE 가이드</div>
+
+  <div class="info-box">
+    <strong>RPE(Rate of Perceived Exertion)</strong>란 세트 종료 후 남은 여력(RIR, Reps In Reserve)을 기반으로 한 강도 지표입니다.
+    Jeff Nippard 프로그램은 %1RM과 RPE를 함께 사용하여 개인 컨디션에 맞게 조절합니다.
+  </div>
+
+  <table class="rpe-table">
+    <thead>
+      <tr>
+        <th>RPE</th>
+        <th>남은 여력 (RIR)</th>
+        <th>느낌</th>
+        <th>사용 시기</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="rpe-num">6</span></td>
+        <td>4회 이상</td>
+        <td>가볍게 느껴짐</td>
+        <td>웜업, 회복 주</td>
+      </tr>
+      <tr>
+        <td><span class="rpe-num">7</span></td>
+        <td>3회</td>
+        <td>적당히 힘듦</td>
+        <td>백오프 세트, 보조 운동</td>
+      </tr>
+      <tr>
+        <td><span class="rpe-num">8</span></td>
+        <td>2회</td>
+        <td>꽤 힘듦</td>
+        <td>대부분의 워킹 세트</td>
+      </tr>
+      <tr>
+        <td><span class="rpe-num">9</span></td>
+        <td>1회</td>
+        <td>매우 힘듦</td>
+        <td>Top Set, 주요 리프트</td>
+      </tr>
+      <tr>
+        <td><span class="rpe-num">10</span></td>
+        <td>0회</td>
+        <td>최대 한계</td>
+        <td>1RM 테스트 시에만</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="sec-title">피라미드 웜업 프로토콜</div>
+  <div class="warmup-block">
+    <div class="warmup-title">▸ 주요 리프트 전 필수 웜업</div>
+    <div class="warmup-step"><span>빈 바 (20kg)</span><span>×15회</span></div>
+    <div class="warmup-step"><span>1RM의 40%</span><span>×5회</span></div>
+    <div class="warmup-step"><span>1RM의 50%</span><span>×4회</span></div>
+    <div class="warmup-step"><span>1RM의 60%</span><span>×3회</span></div>
+    <div class="warmup-step"><span>1RM의 70~75%</span><span>×2회</span></div>
+    <div class="warmup-step" style="color:var(--accent);border-color:var(--accent)"><span>→ 워킹 세트 시작</span><span>💪</span></div>
+  </div>
+
+  <div class="sec-title">휴식 시간 가이드</div>
+  <div class="warmup-block">
+    <div class="warmup-title">▸ 운동 종류별 권장 휴식</div>
+    <div class="warmup-step"><span>Big 3 (스쿼트·벤치·데드)</span><span>3~5분</span></div>
+    <div class="warmup-step"><span>보조 복합 운동 (로우, 프레스)</span><span>2~3분</span></div>
+    <div class="warmup-step"><span>고립 운동 (컬, 익스텐션)</span><span>1~2분</span></div>
+    <div class="warmup-step"><span>슈퍼셋</span><span>30초 (교번 즉시)</span></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== DATA =====================
+const PROGRAM = {
+  odd: { // Strength weeks (1,3,5,7,9)
+    label: '근력 주 (Strength Week)',
+    type: 'strength',
+    days: [
+      {
+        label: 'UPPER A',
+        sub: '가슴·등',
+        blocks: [
+          {
+            name: '벤치프레스', type: 'primary',
+            exercises: [
+              { name: '바벨 벤치프레스', detail: 'Top Set — 가슴에 1초 정지', sets: '1×3', load: '87.5%', rpe: null, rest: '4~5분' },
+              { name: '바벨 벤치프레스', detail: 'Back-off — 탑셋 10% 감량', sets: '2×5', load: '77.5%', rpe: null, rest: '3~4분' },
+            ]
+          },
+          {
+            name: '등 & 보조', type: 'secondary',
+            exercises: [
+              { name: '웨이티드 친업', detail: '가슴을 바에 당기기, 1.5배 어깨 너비 언더핸드', sets: '3×5~6', load: null, rpe: 'RPE 8', rest: '3~4분' },
+              { name: '덤벨 로우', detail: '엄격한 폼, 허리 고정', sets: '3×8', load: null, rpe: 'RPE 8', rest: '2~3분' },
+            ]
+          },
+          {
+            name: '보조 운동', type: 'accessory',
+            exercises: [
+              { name: '인클라인 덤벨 프레스', detail: '30~45도 경사', sets: '3×10~12', load: null, rpe: 'RPE 8', rest: '2분' },
+              { name: '페이스풀', detail: '케이블, 목 근육 자극', sets: '3×15~20', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '바벨 컬', detail: '팔꿈치 고정, 완전 가동범위', sets: '3×10~12', load: null, rpe: 'RPE 8', rest: '1~2분' },
+            ]
+          }
+        ]
+      },
+      {
+        label: 'LOWER A',
+        sub: '스쿼트',
+        blocks: [
+          {
+            name: '스쿼트', type: 'primary',
+            exercises: [
+              { name: '백 스쿼트', detail: '상체 상부에 바를 단단히 고정', sets: '1×3', load: '87.5%', rpe: null, rest: '4~5분' },
+              { name: '백 스쿼트', detail: 'Back-off — 탑셋 대비 10% 감량', sets: '2×5', load: '77.5%', rpe: null, rest: '3~4분' },
+            ]
+          },
+          {
+            name: '보조 하체', type: 'secondary',
+            exercises: [
+              { name: '루마니안 데드리프트', detail: '햄스트링 스트레치 느끼기', sets: '3×8', load: null, rpe: 'RPE 7~8', rest: '2~3분' },
+              { name: '레그 컬', detail: '수축 시 1초 정지', sets: '3×10~12', load: null, rpe: 'RPE 9', rest: '1~2분' },
+            ]
+          },
+          {
+            name: '코어 & 종아리', type: 'accessory',
+            exercises: [
+              { name: '행잉 레그레이즈', detail: '무릎을 가슴으로, 반동 금지', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '스탠딩 카프레이즈', detail: '바닥에서 1~2초 정지, 완전 가동범위', sets: '3×10~12', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '힙 어브덕션', detail: '최상단 1초 아이소 홀드', sets: '3×15~20', load: null, rpe: 'RPE 9', rest: '1분' },
+            ]
+          }
+        ]
+      },
+      {
+        label: 'UPPER B',
+        sub: '어깨·팔',
+        blocks: [
+          {
+            name: '오버헤드 프레스', type: 'primary',
+            exercises: [
+              { name: '바벨 오버헤드 프레스', detail: '매 회 완전 리셋, 폭발적 밀기', sets: '3×4~5', load: '80~85%', rpe: null, rest: '3~4분' },
+            ]
+          },
+          {
+            name: '등·어깨 보조', type: 'secondary',
+            exercises: [
+              { name: '웨이티드 딥', detail: '덤벨 플로어프레스로 대체 가능', sets: '3×5~8', load: null, rpe: 'RPE 8', rest: '2~3분' },
+              { name: '펜들레이 로우', detail: '바를 바닥에서 데드로 당기기', sets: '3×5', load: null, rpe: 'RPE 7~8', rest: '2~3분' },
+              { name: '체스트서포티드 로우', detail: '인클라인 벤치에 엎드려서', sets: '3×10~12', load: null, rpe: 'RPE 9', rest: '2분' },
+            ]
+          },
+          {
+            name: '팔 보조', type: 'accessory',
+            exercises: [
+              { name: '클로즈그립 벤치프레스', detail: '어깨 너비 그립', sets: '3×8~10', load: null, rpe: 'RPE 8', rest: '2분' },
+              { name: '해머 컬', detail: '팔꿈치 고정, 교대 또는 동시', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '1~2분' },
+            ]
+          }
+        ]
+      },
+      {
+        label: 'LOWER B',
+        sub: '데드리프트',
+        blocks: [
+          {
+            name: '데드리프트', type: 'primary',
+            exercises: [
+              { name: '바벨 데드리프트', detail: '랫 조이기, 가슴 세우기, 슬랙 제거 후 당기기', sets: '1×3', load: '87.5%', rpe: null, rest: '4~5분' },
+              { name: '수모 박스 스쿼트', detail: '파우즈 하이바 스쿼트 대체 가능', sets: '2×6', load: null, rpe: 'RPE 7', rest: '2~3분' },
+            ]
+          },
+          {
+            name: '보조 하체', type: 'secondary',
+            exercises: [
+              { name: '불가리안 스플릿 스쿼트', detail: '12회씩 각 다리', sets: '3×10~12', load: null, rpe: 'RPE 8', rest: '2~3분' },
+              { name: '노르딕 햄 컬', detail: '라잉 레그 컬로 대체 가능', sets: '3×6~8', load: null, rpe: 'RPE 8', rest: '1~2분' },
+            ]
+          },
+          {
+            name: '보조', type: 'accessory',
+            exercises: [
+              { name: '덤벨 슈러그', detail: '상단에서 트랩 강하게 수축', sets: '3×20~25', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '시티드 카프레이즈', detail: '무릎에 중량 올리기', sets: '3×15~20', load: null, rpe: 'RPE 9', rest: '1분' },
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  even: { // Hypertrophy weeks (2,4,6,8,10)
+    label: '근비대 주 (Hypertrophy Week)',
+    type: 'hypertrophy',
+    days: [
+      {
+        label: 'UPPER A',
+        sub: '가슴·등',
+        blocks: [
+          {
+            name: '벤치프레스', type: 'primary',
+            exercises: [
+              { name: '바벨 벤치프레스', detail: 'Top Set — 최고 강도 1세트', sets: '1×3', load: '87.5~90%', rpe: null, rest: '4~5분' },
+              { name: '바벨 벤치프레스', detail: '백오프 — 볼륨 축적', sets: '3×8', load: '67.5%', rpe: null, rest: '2~3분' },
+            ]
+          },
+          {
+            name: '등 & 보조', type: 'secondary',
+            exercises: [
+              { name: '친업 (체중)', detail: '언더핸드, 가슴을 바에', sets: '3×8~10', load: null, rpe: 'RPE 8', rest: '2~3분' },
+              { name: '시티드 케이블 로우', detail: '중립 그립, 수축 시 어깨뼈 당기기', sets: '3×10~12', load: null, rpe: 'RPE 9', rest: '2분' },
+            ]
+          },
+          {
+            name: '보조 운동', type: 'accessory',
+            exercises: [
+              { name: '덤벨 인클라인 플라이', detail: '가슴 늘어나는 느낌 집중', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '페이스풀', detail: '외회전 강조', sets: '3×15~20', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: 'A1. 인클라인 컬', detail: '슈퍼셋', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '30초' },
+              { name: 'A2. 플로어 스컬크러셔', detail: '슈퍼셋, 바를 머리 뒤로', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '1~2분' },
+            ]
+          }
+        ]
+      },
+      {
+        label: 'LOWER A',
+        sub: '스쿼트',
+        blocks: [
+          {
+            name: '스쿼트', type: 'primary',
+            exercises: [
+              { name: '백 스쿼트', detail: 'Top Set', sets: '1×5', load: '75~80%', rpe: 'RPE 7.5', rest: '3~4분' },
+              { name: '백 스쿼트', detail: 'Back-off', sets: '2×8', load: '70%', rpe: null, rest: '3분' },
+            ]
+          },
+          {
+            name: '보조 하체', type: 'secondary',
+            exercises: [
+              { name: '굿모닝', detail: '스쿼트와 같은 등 각도 유지', sets: '3×8~10', load: null, rpe: 'RPE 7', rest: '2~3분' },
+              { name: '레그 익스텐션', detail: '밴드 추가하면 근비대에 유리', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '1~2분' },
+            ]
+          },
+          {
+            name: '코어 & 종아리', type: 'accessory',
+            exercises: [
+              { name: '밴디드 래터럴 워크', detail: '발끝 바깥 방향', sets: '3×15~20', load: null, rpe: 'RPE 9', rest: '1분' },
+              { name: 'V 싯업', detail: '복직근 완전 수축 집중', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '스탠딩 카프레이즈', detail: '완전 가동범위', sets: '3×15~20', load: null, rpe: 'RPE 9', rest: '1분' },
+            ]
+          }
+        ]
+      },
+      {
+        label: 'UPPER B',
+        sub: '어깨·팔',
+        blocks: [
+          {
+            name: '오버헤드 프레스', type: 'primary',
+            exercises: [
+              { name: '바벨 오버헤드 프레스', detail: 'Top Set', sets: '1×4', load: '80%', rpe: null, rest: '3~4분' },
+              { name: '싱글암 덤벨 숄더프레스', detail: '한쪽씩, 코어 안정화', sets: '3×10~12', load: null, rpe: 'RPE 9', rest: '2~3분' },
+            ]
+          },
+          {
+            name: '등·어깨 보조', type: 'secondary',
+            exercises: [
+              { name: '클로즈그립 벤치프레스', detail: '어깨 너비 그립', sets: '3×8~10', load: null, rpe: 'RPE 7', rest: '2~3분' },
+              { name: '덤벨 래터럴레이즈', detail: '팔꿈치 약간 구부린 채로 측면 올리기', sets: '3×15~20', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '펙 플라이', detail: '케이블 또는 머신 권장', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '1~2분' },
+            ]
+          },
+          {
+            name: '팔 보조', type: 'accessory',
+            exercises: [
+              { name: 'A1. 인클라인 덤벨 컬', detail: '슈퍼셋', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '30초' },
+              { name: 'A2. 업라이트 로우', detail: '슈퍼셋, 넓은 그립', sets: '3×12~15', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '바벨 스컬크러셔', detail: '바를 머리 뒤 바닥 방향', sets: '3×10~12', load: null, rpe: 'RPE 8', rest: '1~2분' },
+            ]
+          }
+        ]
+      },
+      {
+        label: 'LOWER B',
+        sub: '데드리프트',
+        blocks: [
+          {
+            name: '데드리프트', type: 'primary',
+            exercises: [
+              { name: '5인치 블록 풀', detail: '파셜 데드리프트로 잠금 포지션 강화', sets: '4×4', load: null, rpe: 'RPE 8', rest: '4~5분' },
+              { name: '파우즈 백 스쿼트', detail: '홀 포지션에서 2초 정지', sets: '2×6', load: null, rpe: 'RPE 7', rest: '2~3분' },
+            ]
+          },
+          {
+            name: '보조 하체', type: 'secondary',
+            exercises: [
+              { name: '불가리안 스플릿 스쿼트', detail: '각 다리 12회', sets: '3×12', load: null, rpe: 'RPE 8', rest: '2~3분' },
+              { name: '45도 백 익스텐션', detail: '척추 중립 유지', sets: '3×10~12', load: null, rpe: 'RPE 8', rest: '1~2분' },
+            ]
+          },
+          {
+            name: '보조', type: 'accessory',
+            exercises: [
+              { name: '덤벨 슈러그', detail: '상단 강하게 수축', sets: '3×20~25', load: null, rpe: 'RPE 9', rest: '1~2분' },
+              { name: '시티드 카프레이즈', detail: '완전 가동범위', sets: '3×15~20', load: null, rpe: 'RPE 9', rest: '1분' },
+            ]
+          }
+        ]
+      }
+    ]
+  }
+};
+
+// ===================== STATE =====================
+let state = {
+  currentWeek: parseInt(localStorage.getItem('pb_week') || '1'),
+  currentDay: parseInt(localStorage.getItem('pb_day') || '0'),
+  completedWorkouts: JSON.parse(localStorage.getItem('pb_completed') || '{}'),
+  maxLifts: JSON.parse(localStorage.getItem('pb_maxlifts') || '{"squat":0,"bench":0,"dead":0,"ohp":0}')
+};
+
+// ===================== INIT =====================
+function init() {
+  buildWeekSelector();
+  renderProgram();
+  loadMaxLifts();
+  updatePercentages();
+}
+
+function buildWeekSelector() {
+  const el = document.getElementById('weekSelector');
+  let html = '';
+  for (let w = 1; w <= 10; w++) {
+    const type = w % 2 === 1 ? '근력' : '근비대';
+    html += `<button class="week-btn ${state.currentWeek === w ? 'active' : ''}"
+      onclick="selectWeek(${w})">${w}주<br><span style="font-size:9px;opacity:0.6">${type}</span></button>`;
+  }
+  el.innerHTML = html;
+}
+
+function selectWeek(w) {
+  state.currentWeek = w;
+  state.currentDay = 0;
+  localStorage.setItem('pb_week', w);
+  buildWeekSelector();
+  renderProgram();
+}
+
+function renderProgram() {
+  const isOdd = state.currentWeek % 2 === 1;
+  const plan = isOdd ? PROGRAM.odd : PROGRAM.even;
+
+  // Week type badge
+  const badge = document.getElementById('weekTypeBadge');
+  badge.innerHTML = `<div class="week-type-badge ${plan.type}">
+    ${isOdd ? '⚡' : '💪'} ${plan.label} — Week ${state.currentWeek}
+  </div>`;
+
+  // Day tabs
+  const dayTabs = document.getElementById('dayTabs');
+  dayTabs.innerHTML = plan.days.map((day, i) => {
+    const key = `w${state.currentWeek}d${i}`;
+    const done = state.completedWorkouts[key];
+    return `<div class="day-tab ${state.currentDay === i ? 'active' : ''} ${done ? 'done' : ''}"
+      onclick="selectDay(${i})">
+      <span class="day-tab-label">${day.label}</span>
+      <span class="day-tab-sub">${day.sub}</span>
+    </div>`;
+  }).join('');
+
+  renderWorkout();
+}
+
+function selectDay(d) {
+  state.currentDay = d;
+  localStorage.setItem('pb_day', d);
+  renderProgram();
+}
+
+function renderWorkout() {
+  const isOdd = state.currentWeek % 2 === 1;
+  const plan = isOdd ? PROGRAM.odd : PROGRAM.even;
+  const day = plan.days[state.currentDay];
+  const key = `w${state.currentWeek}d${state.currentDay}`;
+  const isDone = state.completedWorkouts[key];
+
+  let html = '';
+  day.blocks.forEach(block => {
+    html += `<div class="workout-block">
+      <div class="block-header">
+        <div class="block-name">${block.name}</div>
+        <span class="block-type ${block.type}">${block.type === 'primary' ? '주 운동' : block.type === 'secondary' ? '보조 복합' : '고립 운동'}</span>
+      </div>`;
+
+    block.exercises.forEach(ex => {
+      html += `<div class="exercise-row">
+        <div>
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-detail">${ex.detail}</div>
+          <div style="margin-top:4px">
+            ${ex.load ? `<span class="pct-badge">${ex.load}</span> ` : ''}
+            ${ex.rpe ? `<span class="rpe-badge">${ex.rpe}</span> ` : ''}
+            <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted)">휴식 ${ex.rest}</span>
+          </div>
+        </div>
+        <div class="exercise-prescription">
+          <div class="prescription-main">${ex.sets}</div>
+          <div class="prescription-sub">세트×횟수</div>
+        </div>
+      </div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  html += `<button class="done-btn ${isDone ? 'completed' : ''}" onclick="markDone('${key}')">
+    ${isDone ? '✓ 완료됨' : '▶ 운동 완료 체크'}
+  </button>`;
+
+  document.getElementById('workoutContent').innerHTML = html;
+}
+
+function markDone(key) {
+  if (state.completedWorkouts[key]) {
+    delete state.completedWorkouts[key];
+  } else {
+    state.completedWorkouts[key] = true;
+  }
+  localStorage.setItem('pb_completed', JSON.stringify(state.completedWorkouts));
+  renderProgram();
+  if (state.completedWorkouts[key]) showToast('운동 완료! 💪');
+}
+
+// ===================== CALCULATOR =====================
+function calc1RM() {
+  const w = parseFloat(document.getElementById('calcWeight').value);
+  const r = parseInt(document.getElementById('calcReps').value);
+  if (!w || !r || r < 1) return;
+
+  // Epley formula
+  const oneRM = r === 1 ? w : w * (1 + r / 30);
+  const pcts = [90, 85, 80, 75, 70, 67.5];
+
+  let html = `<div style="margin-bottom:8px">예상 <span style="color:var(--accent);font-family:'Bebas Neue';font-size:22px">${oneRM.toFixed(1)}kg</span> (Epley 공식)</div>`;
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">';
+  pcts.forEach(p => {
+    html += `<div style="background:var(--surface2);padding:6px 8px;text-align:center">
+      <div style="font-size:9px;color:var(--muted);letter-spacing:1px">${p}%</div>
+      <div style="font-family:'Bebas Neue';font-size:18px;color:var(--text)">${(oneRM * p / 100).toFixed(1)}kg</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  document.getElementById('calcResult').innerHTML = html;
+}
+
+function save1RM(lift, val) {
+  state.maxLifts[lift] = parseFloat(val) || 0;
+  localStorage.setItem('pb_maxlifts', JSON.stringify(state.maxLifts));
+}
+
+function loadMaxLifts() {
+  const lifts = ['squat', 'bench', 'dead', 'ohp'];
+  const ids = ['squat1rm', 'bench1rm', 'dead1rm', 'ohp1rm'];
+  lifts.forEach((l, i) => {
+    if (state.maxLifts[l]) {
+      document.getElementById(ids[i]).value = state.maxLifts[l];
+    }
+  });
+}
+
+function updatePercentages() {
+  const pcts = [90, 87.5, 85, 80, 77.5, 75, 70, 67.5];
+  const lifts = [
+    { key: 'squat', id: 'squat-pcts' },
+    { key: 'bench', id: 'bench-pcts' },
+    { key: 'dead', id: 'dead-pcts' },
+    { key: 'ohp', id: 'ohp-pcts' }
+  ];
+
+  lifts.forEach(({ key, id }) => {
+    const max = state.maxLifts[key];
+    if (!max) { document.getElementById(id).innerHTML = ''; return; }
+    const shown = [90, 85, 80, 75, 70, 67.5];
+    const html = shown.map(p =>
+      `<span style="color:var(--muted)">${p}%:</span> <span style="color:var(--accent)">${(max * p / 100).toFixed(1)}kg</span>`
+    ).join(' · ');
+    document.getElementById(id).innerHTML = html;
+  });
+}
+
+// ===================== NAV =====================
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ===================== TOAST =====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+init();
+</script>
+</body>
+</html>

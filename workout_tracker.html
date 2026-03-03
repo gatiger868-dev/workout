@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRONLOG — 운동 기록</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --surface3: #2a2a2a;
+    --accent: #e8ff00;
+    --accent2: #ff3d00;
+    --text: #f5f5f0;
+    --muted: #888;
+    --border: #333;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans KR', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  header { padding: 18px 24px; border-bottom: 2px solid var(--accent); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg); z-index: 100; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; letter-spacing: 0.1em; color: var(--accent); }
+  .logo span { color: var(--text); }
+  .header-date { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--muted); text-align: right; line-height: 1.6; }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .tab { padding: 13px 22px; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); cursor: pointer; border: none; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; background: none; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
+  main { padding: 24px; max-width: 800px; margin: 0 auto; }
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 16px; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.3rem; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 0.7rem; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+  .timer-section { background: var(--surface); border: 1px solid var(--accent); padding: 18px 20px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .timer-display { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--accent); letter-spacing: 0.1em; line-height: 1; }
+  .timer-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .timer-btns { display: flex; gap: 8px; }
+  .workout-form { background: var(--surface); border: 1px solid var(--border); padding: 22px; margin-bottom: 28px; }
+  .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.05em; margin-bottom: 18px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  input, select, textarea { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 10px 12px; font-family: 'IBM Plex Sans KR', sans-serif; font-size: 0.88rem; outline: none; transition: border-color 0.2s; width: 100%; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  select option { background: var(--surface2); }
+  textarea { resize: vertical; min-height: 70px; }
+  .sets-header { display: grid; grid-template-columns: 36px 1fr 1fr 1fr 36px; gap: 8px; padding: 8px 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .set-row { display: grid; grid-template-columns: 36px 1fr 1fr 1fr 36px; gap: 8px; align-items: center; margin-bottom: 8px; animation: slideIn 0.2s ease; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+  .set-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--accent); text-align: center; }
+  .set-row input { padding: 8px 10px; text-align: center; }
+  .delete-set { background: none; border: 1px solid var(--border); color: var(--muted); cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.2s; }
+  .delete-set:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn { padding: 11px 18px; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.2s; }
+  .btn-ghost { background: none; border: 1px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary { background: var(--accent); color: #000; font-weight: 700; }
+  .btn-primary:hover { background: #fff; }
+  .btn-danger { background: none; border: 1px solid var(--accent2); color: var(--accent2); }
+  .btn-danger:hover { background: var(--accent2); color: #fff; }
+  .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+  .log-list { display: flex; flex-direction: column; gap: 12px; }
+  .log-card { background: var(--surface); border: 1px solid var(--border); padding: 18px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+  .log-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); transform: scaleY(0); transition: transform 0.2s; }
+  .log-card:hover { border-color: var(--accent); transform: translateX(3px); }
+  .log-card:hover::before { transform: scaleY(1); }
+  .log-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .log-exercise { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: 0.05em; }
+  .log-date { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--muted); }
+  .log-category { display: inline-block; padding: 3px 8px; background: var(--surface3); font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 10px; }
+  .log-meta { display: flex; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--muted); flex-wrap: wrap; }
+  .log-meta strong { color: var(--text); font-size: 0.88rem; }
+  .log-sets-detail { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .log-card.expanded .log-sets-detail { display: block; }
+  .sets-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.73rem; }
+  .sets-table th { text-align: left; padding: 6px 10px; color: var(--muted); font-size: 0.62rem; letter-spacing: 0.1em; border-bottom: 1px solid var(--border); }
+  .sets-table td { padding: 8px 10px; border-bottom: 1px solid var(--surface3); }
+  .sets-table tr:last-child td { border-bottom: none; }
+  .log-note { margin-top: 10px; font-size: 0.8rem; color: var(--muted); font-style: italic; padding: 8px 12px; background: var(--surface2); border-left: 2px solid var(--border); }
+  .log-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.3; }
+  .empty-state h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--surface3); margin-bottom: 8px; }
+  .empty-state p { font-size: 0.83rem; }
+  .chart-section { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 16px; }
+  .chart-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 0.05em; margin-bottom: 16px; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 130px; padding-top: 20px; }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+  .bar { width: 100%; background: var(--accent); transition: height 0.6s cubic-bezier(0.4,0,0.2,1); position: relative; min-height: 3px; }
+  .bar:hover { background: #fff; }
+  .bar-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--accent); position: absolute; top: -17px; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+  .bar-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--muted); text-align: center; }
+  .heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px; }
+  .heat-day { aspect-ratio: 1; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--muted); transition: all 0.2s; }
+  .heat-day.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+  .heat-day.semi { background: rgba(232,255,0,0.25); color: var(--accent); border-color: rgba(232,255,0,0.4); }
+  .heat-labels { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--muted); text-align: center; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+  @media (max-width: 500px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .sets-header, .set-row { grid-template-columns: 30px 1fr 1fr 1fr 30px; }
+    .timer-display { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">IRON<span>LOG</span></div>
+  <div class="header-date" id="headerDate"></div>
+</header>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('log', this)">기록하기</button>
+  <button class="tab" onclick="switchTab('history', this)">히스토리</button>
+  <button class="tab" onclick="switchTab('stats', this)">통계</button>
+</div>
+<main>
+  <!-- LOG PAGE -->
+  <div class="page active" id="page-log">
+    <div class="timer-section">
+      <div>
+        <div class="timer-label">운동 타이머</div>
+        <div class="timer-display" id="timerDisplay">00:00:00</div>
+      </div>
+      <div class="timer-btns">
+        <button class="btn btn-ghost" id="timerBtn" onclick="toggleTimer()">▶ 시작</button>
+        <button class="btn btn-ghost" onclick="resetTimer()">↺ 초기화</button>
+      </div>
+    </div>
+    <div class="section-label">이번 주 요약</div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="statWorkouts">0</div><div class="stat-label">운동 횟수</div></div>
+      <div class="stat-card"><div class="stat-num" id="statSets">0</div><div class="stat-label">총 세트</div></div>
+      <div class="stat-card"><div class="stat-num" id="statVolume">0</div><div class="stat-label">총 볼륨(kg)</div></div>
+    </div>
+    <div class="section-label">새 운동 추가</div>
+    <div class="workout-form">
+      <div class="form-title">운동 입력</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>운동 이름</label>
+          <input type="text" id="exerciseName" placeholder="예: 벤치프레스" list="exerciseList">
+          <datalist id="exerciseList">
+            <option value="벤치프레스"><option value="스쿼트"><option value="데드리프트">
+            <option value="오버헤드프레스"><option value="바벨로우"><option value="풀업">
+            <option value="딥스"><option value="레그프레스"><option value="덤벨컬">
+            <option value="트라이셉스익스텐션"><option value="런지"><option value="플랭크">
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label>카테고리</label>
+          <select id="category">
+            <option>가슴</option><option>등</option><option>어깨</option><option>하체</option>
+            <option>팔</option><option>코어</option><option>유산소</option><option>전신</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>날짜</label>
+          <input type="date" id="workoutDate">
+        </div>
+        <div class="form-group">
+          <label>운동 시간 (분)</label>
+          <input type="number" id="duration" placeholder="예: 60" min="0">
+        </div>
+      </div>
+      <div class="sets-area" style="margin-bottom:14px;">
+        <div class="section-label">세트 기록</div>
+        <div class="sets-header">
+          <div>SET</div><div>무게(kg)</div><div>횟수</div><div>휴식(s)</div><div></div>
+        </div>
+        <div id="setsContainer"></div>
+        <button class="btn btn-ghost" onclick="addSet()" style="width:100%;margin-top:4px;">+ 세트 추가</button>
+      </div>
+      <div class="form-group full">
+        <label>메모</label>
+        <textarea id="notes" placeholder="오늘의 컨디션, 느낀 점..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="clearForm()">초기화</button>
+        <button class="btn btn-primary" onclick="saveWorkout()">저장하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY PAGE -->
+  <div class="page" id="page-history">
+    <div class="section-label" style="margin-bottom:20px;">운동 기록</div>
+    <div class="log-list" id="logList"></div>
+  </div>
+
+  <!-- STATS PAGE -->
+  <div class="page" id="page-stats">
+    <div class="section-label" style="margin-bottom:20px;">운동 분석</div>
+    <div class="chart-section">
+      <div class="chart-title">최근 7일 운동 횟수</div>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-title">이번 주 활동</div>
+      <div class="heatmap" id="heatmap"></div>
+      <div class="heat-labels"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-title">카테고리별 운동 횟수</div>
+      <div id="categoryStats"></div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-title">전체 기록 요약</div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="totalWorkouts">0</div><div class="stat-label">총 운동 횟수</div></div>
+        <div class="stat-card"><div class="stat-num" id="totalSetsAll">0</div><div class="stat-label">총 세트</div></div>
+        <div class="stat-card"><div class="stat-num" id="totalVolumeAll">0</div><div class="stat-label">총 볼륨(t)</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+let workouts = JSON.parse(localStorage.getItem('ironlog') || '[]');
+let setCount = 1;
+let timerSec = 0, timerRunning = false, timerInterval = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const now = new Date();
+  document.getElementById('workoutDate').value = now.toISOString().split('T')[0];
+  document.getElementById('headerDate').innerHTML =
+    now.toLocaleDateString('ko-KR',{weekday:'short',year:'numeric',month:'long',day:'numeric'}) +
+    '<br>' + now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  addSet();
+  renderWeekStats();
+});
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  el.classList.add('active');
+  if (tab === 'history') renderHistory();
+  if (tab === 'stats') renderStats();
+}
+
+// TIMER
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval); timerRunning = false;
+    document.getElementById('timerBtn').textContent = '▶ 계속';
+  } else {
+    timerInterval = setInterval(() => { timerSec++; updateTimerDisplay(); }, 1000);
+    timerRunning = true;
+    document.getElementById('timerBtn').textContent = '⏸ 정지';
+  }
+}
+function resetTimer() {
+  clearInterval(timerInterval); timerRunning = false; timerSec = 0;
+  updateTimerDisplay(); document.getElementById('timerBtn').textContent = '▶ 시작';
+}
+function updateTimerDisplay() {
+  const h = String(Math.floor(timerSec/3600)).padStart(2,'0');
+  const m = String(Math.floor((timerSec%3600)/60)).padStart(2,'0');
+  const s = String(timerSec%60).padStart(2,'0');
+  document.getElementById('timerDisplay').textContent = `${h}:${m}:${s}`;
+}
+
+// SETS
+function addSet() {
+  const c = document.getElementById('setsContainer');
+  const row = document.createElement('div');
+  row.className = 'set-row';
+  row.innerHTML = `
+    <div class="set-num">${setCount}</div>
+    <input type="number" placeholder="0" min="0" step="0.5" class="sw">
+    <input type="number" placeholder="0" min="0" class="sr">
+    <input type="number" placeholder="60" min="0" class="srest">
+    <button class="delete-set" onclick="removeSet(this)">✕</button>`;
+  c.appendChild(row); setCount++;
+}
+function removeSet(btn) {
+  btn.closest('.set-row').remove();
+  document.querySelectorAll('.set-row').forEach((r,i) => r.querySelector('.set-num').textContent = i+1);
+}
+
+// SAVE
+function saveWorkout() {
+  const name = document.getElementById('exerciseName').value.trim();
+  if (!name) { alert('운동 이름을 입력해주세요!'); return; }
+  const sets = [...document.querySelectorAll('.set-row')].map(r => ({
+    weight: parseFloat(r.querySelector('.sw').value)||0,
+    reps: parseInt(r.querySelector('.sr').value)||0,
+    rest: parseInt(r.querySelector('.srest').value)||60
+  }));
+  workouts.unshift({
+    id: Date.now(),
+    exercise: name,
+    category: document.getElementById('category').value,
+    date: document.getElementById('workoutDate').value,
+    duration: parseInt(document.getElementById('duration').value)||0,
+    sets, notes: document.getElementById('notes').value.trim()
+  });
+  localStorage.setItem('ironlog', JSON.stringify(workouts));
+  clearForm(); renderWeekStats();
+  showToast('💪 저장되었습니다!');
+}
+function clearForm() {
+  document.getElementById('exerciseName').value = '';
+  document.getElementById('notes').value = '';
+  document.getElementById('duration').value = '';
+  document.getElementById('setsContainer').innerHTML = '';
+  setCount = 1; addSet();
+}
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--accent);color:#000;padding:12px 20px;font-family:"IBM Plex Mono",monospace;font-size:0.78rem;font-weight:700;letter-spacing:0.05em;';
+  t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// WEEK STATS
+function getWeekWorkouts() {
+  const now = new Date(), s = new Date(now);
+  s.setDate(now.getDate() - now.getDay()); s.setHours(0,0,0,0);
+  return workouts.filter(w => new Date(w.date) >= s);
+}
+function renderWeekStats() {
+  const w = getWeekWorkouts();
+  document.getElementById('statWorkouts').textContent = w.length;
+  document.getElementById('statSets').textContent = w.reduce((a,x)=>a+x.sets.length,0);
+  document.getElementById('statVolume').textContent = Math.round(w.reduce((a,x)=>a+x.sets.reduce((b,s)=>b+s.weight*s.reps,0),0)).toLocaleString();
+}
+
+// HISTORY
+function renderHistory() {
+  const el = document.getElementById('logList');
+  if (!workouts.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🏋️</div><h3>기록이 없습니다</h3><p>첫 운동을 기록해보세요!</p></div>';
+    return;
+  }
+  el.innerHTML = workouts.map(w => {
+    const vol = w.sets.reduce((a,s)=>a+s.weight*s.reps,0);
+    const maxW = Math.max(...w.sets.map(s=>s.weight));
+    const rows = w.sets.map((s,i)=>`<tr><td>${i+1}</td><td>${s.weight}kg</td><td>${s.reps}회</td><td>${Math.round(s.weight*s.reps)}kg</td></tr>`).join('');
+    return `<div class="log-card" onclick="toggleCard(this)">
+      <div class="log-card-header"><div class="log-exercise">${w.exercise}</div><div class="log-date">${fmtDate(w.date)}</div></div>
+      <div class="log-category">${w.category}</div>
+      <div class="log-meta">
+        <span><strong>${w.sets.length}</strong> 세트</span>
+        <span><strong>${maxW}kg</strong> 최대</span>
+        <span><strong>${Math.round(vol).toLocaleString()}kg</strong> 볼륨</span>
+        ${w.duration?`<span><strong>${w.duration}분</strong></span>`:''}
+      </div>
+      <div class="log-sets-detail">
+        <table class="sets-table"><thead><tr><th>SET</th><th>무게</th><th>횟수</th><th>볼륨</th></tr></thead><tbody>${rows}</tbody></table>
+        ${w.notes?`<div class="log-note">${w.notes}</div>`:''}
+        <div class="log-actions"><button class="btn btn-danger" onclick="delWorkout(event,${w.id})">삭제</button></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleCard(c) { c.classList.toggle('expanded'); }
+function delWorkout(e, id) {
+  e.stopPropagation();
+  if (!confirm('삭제할까요?')) return;
+  workouts = workouts.filter(w=>w.id!==id);
+  localStorage.setItem('ironlog', JSON.stringify(workouts));
+  renderHistory(); renderWeekStats();
+}
+
+// STATS
+function renderStats() {
+  // Bar chart - last 7 days
+  const now = new Date();
+  const days = Array.from({length:7},(_,i)=>{
+    const d = new Date(now); d.setDate(d.getDate()-6+i);
+    const ds = d.toISOString().split('T')[0];
+    return { label:(d.getMonth()+1)+'/'+(d.getDate()), count:workouts.filter(w=>w.date===ds).length };
+  });
+  const max = Math.max(...days.map(d=>d.count),1);
+  document.getElementById('barChart').innerHTML = days.map(d=>`
+    <div class="bar-wrap">
+      <div class="bar" style="height:${Math.max((d.count/max)*100,3)}%">
+        ${d.count?`<span class="bar-val">${d.count}</span>`:''}
+      </div>
+      <div class="bar-label">${d.label}</div>
+    </div>`).join('');
+
+  // Heatmap
+  const sw = new Date(now); sw.setDate(now.getDate()-now.getDay()); sw.setHours(0,0,0,0);
+  document.getElementById('heatmap').innerHTML = Array.from({length:7},(_,i)=>{
+    const d = new Date(sw); d.setDate(d.getDate()+i);
+    const ds = d.toISOString().split('T')[0];
+    const cnt = workouts.filter(w=>w.date===ds).length;
+    const isToday = ds===now.toISOString().split('T')[0];
+    const cls = cnt>=2?'active':cnt===1?'semi':'';
+    return `<div class="heat-day ${cls}">${cnt||( isToday?'●':'')}</div>`;
+  }).join('');
+
+  // Category stats
+  const cats = {};
+  workouts.forEach(w=>{ cats[w.category]=(cats[w.category]||0)+1; });
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const cmax = sorted[0]?.[1]||1;
+  document.getElementById('categoryStats').innerHTML = sorted.length
+    ? sorted.map(([c,n])=>`
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.73rem;">${c}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:0.73rem;color:var(--accent);">${n}회</span>
+          </div>
+          <div style="height:5px;background:var(--surface3);">
+            <div style="height:100%;width:${(n/cmax)*100}%;background:var(--accent);transition:width 0.6s;"></div>
+          </div>
+        </div>`).join('')
+    : '<p style="color:var(--muted);font-size:0.83rem;">데이터가 없습니다.</p>';
+
+  // Totals
+  document.getElementById('totalWorkouts').textContent = workouts.length;
+  document.getElementById('totalSetsAll').textContent = workouts.reduce((a,w)=>a+w.sets.length,0);
+  const tv = workouts.reduce((a,w)=>a+w.sets.reduce((b,s)=>b+s.weight*s.reps,0),0);
+  document.getElementById('totalVolumeAll').textContent = (tv/1000).toFixed(1);
+}
+
+function fmtDate(ds) {
+  const d = new Date(ds+'T00:00:00');
+  return d.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});
+}
+</script>
+</body>
+</html>
